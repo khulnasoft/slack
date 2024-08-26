@@ -1,24 +1,17 @@
-check:
-	golangci-lint run
-
-check-clean-cache:
-	golangci-lint cache clean
-
-protoc-setup:
-	wget -P meshes https://raw.githubusercontent.com/khulnasoft/meshplay/master/meshes/meshops.proto
-
-proto:
-	protoc -I meshes/ meshes/meshops.proto --go_out=plugins=grpc:./meshes/
-
-
-
-
+jekyll=bundle exec jekyll
 
 site:
-	$(jekyll) serve --drafts --livereload
+	$(jekyll) serve --drafts --livereload --config _config.yml
+
+# With Jekyll Manager interface
+site-admin:
+	ADMIN=on $(jekyll) serve --drafts --livereload --config _config.yml
 
 build:
-	$(jekyll) build --drafts
+	$(jekyll) build --drafts 
+
+setup:
+	ADMIN=on bundle install
 
 docker:
-	docker run --name site -d --rm -p 4000:4000 -v `pwd`:"/srv/jekyll" jekyll/jekyll:4.0.0 bash -c "bundle install; jekyll serve --drafts --livereload"
+	docker run --name meet --rm -p 4000:4000 -v `pwd`:"/srv/jekyll" jekyll/jekyll:4.0.0 bash -c "bundle install; jekyll serve --drafts --livereload --config _config.yml,_config_dev.yml"
